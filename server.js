@@ -129,4 +129,4 @@ app.get('/:id', async (req, res) => {
 
 console.warn = console.error = console.info = function () {};
 
-app.listen(3000, () => console.log('⚜️  Server running now on http://localhost:3000'));
+app.listen(process.env.PORT || 3000, () => console.log('⚜️  Server running now on http://localhost:3000'));

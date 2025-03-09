@@ -3,6 +3,7 @@
 - `npm i` ile tüm modülleri indir.
 - `node .` ile de siteyi başlat.
 - **http://localhost:3000/** linkinde siten başladı. ✅
+- Henüz mobil uyumluluğu yok.
 
 # 🔎 İletişim
 

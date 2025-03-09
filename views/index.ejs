@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= name %> - Profil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" type="image/x-icon" href="/gsmarkt.ico">
+  <style>
+    body {
+      font-family: 'arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f5f5f5;
+      color: #333;
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+    .profile-card {
+      background-color: #ffffff;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .profile-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .photo img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #006fa6;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .content h1 {
+      font-size: 2.5rem;
+      color: #006fa6;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .content p {
+      font-size: 1rem;
+      color: #000000;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .content span {
+      font-weight: bold;
+      color: #006fa6;
+    }
+
+    .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: color 0.3s;
+        }
+
+.home-button,
+.back-button {
+        position: fixed;
+        top: 6px;
+        left: 6px;
+        background: transparent;
+        color: #333;
+        border: none;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        font-size: 22px;
+        width: 20px;
+        height: 20px;
+        text-decoration: none;
+    }
+
+.home-button { left: 6px; }
+
+.back-button { left: 50px; }
+
+.home-button:hover,
+.back-button:hover {
+  transform: scale(1.1);
+  background: #ccc;
+}
+
+.dark-theme .home-button,
+.dark-theme .back-button {
+  background: transparent;
+  color: white;
+}
+
+    body.dark-theme {
+      background-color: #333;
+      color: #ffffff;
+    }
+
+    .dark-theme .profile-card {
+      background-color: #222;
+      color: #ffffff;
+    }
+
+    .dark-theme .content p {
+      color: #ffffff;
+    }
+
+    .dark-theme .content span {
+      color: #006fa6;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+      .profile-card {
+        padding: 20px;
+      }
+      .content h1 {
+        font-size: 2rem;
+      }
+      .content p {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a href="/" class="home-button">
+    <i class="fas fa-home"></i>
+  </a>
+
+  <button class="back-button">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+
+  <i id="themeToggle" class="fas fa-sun theme-toggle"></i>
+
+  <div class="profile-card">
+    <div class="photo">
+      <img src="<%= photoUrl %>" alt="<%= name %>">
+    </div>
+    <div class="content">
+      <h1><%= shirtNumber %> <%= name %></h1>
+      <p><span>Açıklama:</span> <%= description %></p>
+      <p><span>Uyruğu:</span> <%= city %>, <%= country %></p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("themeToggle").addEventListener("click", function () {
+      document.body.classList.toggle("dark-theme");
+      localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme");
+      updateThemeIcon();
+    });
+
+    function updateThemeIcon() {
+      const icon = document.getElementById("themeToggle");
+      if (document.body.classList.contains("dark-theme")) {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+      } else {
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (localStorage.getItem("theme") === "dark-theme") {
+        document.body.classList.add("dark-theme");
+      }
+      updateThemeIcon();
+    });
+
+    document.querySelector(".back-button").addEventListener("click", function () {
+  localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme");
+  window.history.back();
+});
+  </script>
+</body>
+</html>

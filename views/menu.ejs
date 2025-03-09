@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyuncu Arama</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="/gsmarkt.ico">
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        :root {
+            --primary-color: #006fa6;
+            --background-light: #f5f5f5;
+            --background-dark: #333;
+            --text-light: #ffffff;
+            --text-dark: #222;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: 0.3s;
+        }
+
+        .menu h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .menu input {
+            padding: 10px 15px;
+            width: 280px;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            outline: none;
+            background: var(--background-light);
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .menu input:focus {
+            border-color: var(--text-dark);
+        }
+
+        .menu button {
+            padding: 12px 25px;
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .menu button:hover {
+            background: #004d6e;
+            transform: scale(1.05);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        body.dark-theme {
+            background-color: var(--background-dark);
+            color: var(--text-light);
+        }
+
+        body.dark-theme .menu {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        body.dark-theme .menu input {
+            background: var(--background-dark);
+            color: var(--text-light);
+            border-color: var(--text-light);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        .loading-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+        }
+        .ring {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 3px solid transparent;
+            border-top: 3px solid #ff00ff;
+            border-radius: 50%;
+            animation: rotate 1.5s linear infinite;
+        }
+        .ring:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            border-top: 3px solid #00ffff;
+            animation-duration: 2s;
+        }
+        .ring:nth-child(3) {
+            width: 140px;
+            height: 140px;
+            border-top: 3px solid #ffcc00;
+            animation-duration: 2.5s;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <i id="themeToggle" class="fas fa-sun theme-toggle"></i>
+      
+    <div class="menu">
+        <h1>Oyuncu Arama</h1>
+        <form id="playerSearchForm" action="/search" method="POST">
+            <input type="text" id="playerName" name="playerName" placeholder="Arama yap..." required>
+            <button type="submit">Ara</button>
+        </form>     
+    </div>
+    <div id="loadingOverlay" class="loading-overlay hidden">
+      <div class="loading-wrapper">
+          <div class="ring"></div>
+          <div class="ring"></div>
+          <div class="ring"></div>
+      </div>
+
+    <script>
+      const form = document.getElementById('playerSearchForm');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const countdownText = document.getElementById('countdownText');
+  
+      form.addEventListener('submit', (event) => {
+        loadingOverlay.classList.remove('hidden');
+  
+        let timeLeft = 10;
+  
+        const countdownInterval = setInterval(() => {
+          timeLeft--;
+          countdownText.textContent = `Yaklaşık ${timeLeft} saniye kaldı.`;
+  
+          if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            countdownText.textContent = "Sonuçlar yükleniyor...";
+          }
+        }, 1000);
+      });
+    </script>
+  
+    <script>
+        document.getElementById("themeToggle").addEventListener("click", function () {
+            document.body.classList.toggle("dark-theme");
+            localStorage.setItem("theme", document.body.classList.contains("dark-theme") ? "dark-theme" : "light-theme");
+            updateThemeIcon();
+        });
+
+        function updateThemeIcon() {
+            const icon = document.getElementById("themeToggle");
+            if (document.body.classList.contains("dark-theme")) {
+                icon.classList.remove("fa-sun");
+                icon.classList.add("fa-moon");
+            } else {
+                icon.classList.remove("fa-moon");
+                icon.classList.add("fa-sun");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("theme") === "dark-theme") {
+                document.body.classList.add("dark-theme");
+            }
+            updateThemeIcon();
+        });
+    </script>
+</body>
+</html>

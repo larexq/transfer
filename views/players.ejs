@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oyuncu Sonuçları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <link rel="icon" type="image/x-icon" href="/gsmarkt.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .dark-theme .home-button {
+        position: fixed;
+        top: 6px;
+        left: 6px;
+        background: transparent;
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        font-size: 22px;
+        width: 20px;
+        height: 20px;
+        text-decoration: none;
+    }
+
+    .dark-theme .home-button:hover {
+        background: #333;
+        transform: scale(1.1);
+    }
+
+    .light-theme .home-button {
+        position: fixed;
+        top: 6px;
+        left: 6px;
+        background: transparent;
+        color: #333;
+        border: none;
+        padding: 12px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: background 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        font-size: 22px;
+        width: 20px;
+        height: 20px;
+        text-decoration: none;
+    }
+
+    .light-theme .home-button:hover {
+        background: #ccc;
+        transform: scale(1.1);
+    }
+</style>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            color: #333;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #006fa6;
+            font-size: 36px;
+            margin: 20px 0;
+        }
+
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #006fa6, #00aaff);
+            box-shadow: 0 0 10px rgba(0, 170, 255, 0.6);
+            border-radius: 2px;
+            transition: width 0.4s ease-in-out;
+        }
+
+        .menu {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f7fafc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: color 0.3s;
+        }
+
+        body.light-theme {
+            background-color: #f0f4f8;
+            color: #333;
+        }
+
+        .light-theme .menu {
+            background-color: #f7fafc;
+        }
+
+        .light-theme .player-table th {
+            background-color: #006fa6;
+        }
+
+        .light-theme .pagination button {
+            background-color: #006fa6;
+        }
+
+        .light-theme .player-table tr {
+            background-color: #f9fafc;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .light-theme .player-table tr {
+            background-color: #f9fafc;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .light-theme .player-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .light-theme .player-table th, .player-table td {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .light-theme .player-table th {
+            color: white;
+            font-weight: 600;
+        }
+
+        .light-theme .player-table tr {
+            background-color: #f9fafc;
+            border-bottom: 1px solid #444;
+        }
+
+        .light-theme .player-table tr:hover {
+            background-color: #e1effa;
+        }
+
+        .light-theme .player-name-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .light-theme .player-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #006fa6;
+            text-decoration: none;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .light-theme .player-name:hover {
+            color: #004d6e;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .light-theme .player-club {
+            font-size: 12px;
+            color: #444;
+        }
+
+        .light-theme .player-details {
+            font-size: 13px;
+            color: #444;
+        }
+
+        .light-theme .market-value {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .light-theme .player-table th, 
+        .light-theme .player-table td {
+            border-right: 1px solid #333;
+        }
+
+        .light-theme .player-table th:last-child, 
+        .light-theme .player-table td:last-child {
+            border-right: none;
+        }
+
+        .light-theme .player-table tr:last-child {
+            border-bottom: none;
+        }
+
+        body.dark-theme {
+            background-color: #333;
+            color: #f0f4f8;
+        }
+
+        .dark-theme .menu {
+            background-color: #444;
+        }
+
+        .dark-theme .player-table th {
+            background-color: #006fa6;
+        }
+
+        .dark-theme .pagination button {
+            background-color: #006fa6;
+        }
+
+        .dark-theme .player-table tr {
+            background-color: #f9fafc;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dark-theme .player-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .dark-theme .player-table th, .player-table td {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .dark-theme .player-table th {
+            color: white;
+            font-weight: 600;
+        }
+
+        .dark-theme .player-table tr {
+            background-color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .dark-theme .player-table tr:hover {
+            background-color: #444;
+        }
+
+        .dark-theme .player-name-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .dark-theme .player-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #006fa6;
+            text-decoration: none;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .dark-theme .player-name:hover {
+            color: #004d6e;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .dark-theme .player-club {
+            font-size: 12px;
+            color: #ddd;
+        }
+
+        .dark-theme .player-details {
+            font-size: 13px;
+            color: #ddd;
+        }
+
+        .dark-theme .market-value {
+            font-weight: 600;
+            color: #ddd;
+        }
+
+        .dark-theme .player-table th, 
+        .dark-theme .player-table td {
+            border-right: 1px solid #ddd;
+        }
+
+        .dark-theme .player-table th:last-child, 
+        .dark-theme .player-table td:last-child {
+            border-right: none;
+        }
+
+        .dark-theme .player-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .player-photos {
+            margin: 0 auto;
+            display: block;
+        }
+
+        .club-logo {
+            margin: 0 auto;
+            display: block;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .pagination button {
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background-color: #004d6e;
+            transform: scale(1.05);
+        }
+
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 5px;
+            width: 45px;
+            height: 45px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            align-items: center;
+            justify-content: center;
+        }
+        #scrollTopBtn:hover {
+            background-color: #0056b3;
+        }
+        #scrollTopBtn::before {
+            content: '\f077';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 24px;
+            color: white;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .dark-theme .scrollbar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-theme .scroll-thumb {
+            position: absolute;
+            width: 6px;
+            background: white;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .light-theme .scrollbar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: white;
+        }
+
+        .light-theme .scroll-thumb {
+            position: absolute;
+            width: 6px;
+            background: #333;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="home-button">
+        <i class="fas fa-home"></i>
+    </a>
+    
+    <div class="scrollbar">
+        <div class="scroll-thumb"></div>
+    </div>
+    <script>
+        const thumb = document.querySelector(".scroll-thumb");
+        const scrollbar = document.querySelector(".scrollbar");
+        let isDragging = false;
+        let startY, startScrollTop;
+        
+        function updateThumb() {
+            const scrollRatio = window.innerHeight / document.body.scrollHeight;
+            const thumbHeight = scrollRatio * window.innerHeight;
+            thumb.style.height = `${thumbHeight}px`;
+            const scrollTopRatio = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+            thumb.style.top = `${scrollTopRatio * (window.innerHeight - thumb.offsetHeight)}px`;
+        }
+        
+        window.addEventListener("load", updateThumb);
+        window.addEventListener("scroll", updateThumb);
+        
+        thumb.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            startScrollTop = window.scrollY;
+            document.body.style.userSelect = "none";
+        });
+        
+        document.addEventListener("mousemove", (e) => {
+            if (!isDragging) return;
+            const deltaY = e.clientY - startY;
+            const scrollAmount = (deltaY / (window.innerHeight - thumb.offsetHeight)) * (document.body.scrollHeight - window.innerHeight);
+            window.scrollTo(0, startScrollTop + scrollAmount);
+        });
+        
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            document.body.style.userSelect = "auto";
+        });
+        
+        window.addEventListener("resize", updateThumb);
+    </script>
+
+    <button id="scrollTopBtn" onclick="scrollToTop()"></button>
+
+    <script>
+        var scrollTopBtn = document.getElementById("scrollTopBtn");
+
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                scrollTopBtn.style.display = "flex";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</head>
+
+<body class="light-theme">
+    <div id="progressBar"></div>
+    <div class="menu">
+        <h1>Arama Sonuçları</h1>
+
+        <i id="themeToggle" class="fas fa-sun theme-toggle"></i>
+
+        <% if (players.length > 0) { %>
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th>İsim</th>
+                        <th>Mevki</th>
+                        <th>Kulüp</th>
+                        <th>Yaş</th>
+                        <th>Uyruk</th>
+                        <th>Piyasa Değeri</th>
+                        <th>Danışman</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% players.forEach(player => { %>
+                        <tr>
+                            <td>
+                                <img class="player-photos" src="<%= player.photoUrl %>" alt="<%= player.name %>">
+                                <div class="player-name-container">
+                                    <a href="/<%= encodeURIComponent(player.id) %>" class="player-name"><%= player.name %></a>
+                                    <div class="player-club"><%= player.club.name.replace("Retired", "Emekli").replace("Without Club", "Kulüpsüz") || 'Bilinmiyor' %></div>
+                                </div>
+                            </td>                            
+                            <td class="player-details"><%= player.position || '-' %></td>
+                            <td class="player-details">
+                                <% if (player.club && player.club.id) { %>
+                                    <img class="club-logo" src="https://tmssl.akamaized.net//images/wappen/small/<%= player.club.id %>.png" alt="<%= player.club.name || 'Kulüp Logosu' %>">
+                                <% } else { %>
+                                    <span>-</span>
+                                <% } %>
+                            </td>
+                            <td class="player-details"><%= player.age || '-' %></td>
+                            <td>
+                                <% 
+                             function getCountryIds(name) {
+                            const matches = countries.filter(c => c.title === name);
+                           return matches.length > 0 ? matches.map(c => c.id).join(", ") : "default"; 
+                                }
+                                %>
+                                <% if (Array.isArray(player.nationalities) && player.nationalities.length > 0) { %>
+                                    <% player.nationalities.forEach(nationality => { %>
+                                        <img class="flag" src="https://tmssl.akamaized.net//images/flagge/small/<%= getCountryIds(nationality) %>.png" alt="<%= nationality || 'Bayrak' %>">                                    <% }); %>
+                                <% } else { %>
+                                    <span>-</span>
+                                <% } %>
+                            </td>                                                       
+                            <td class="market-value">
+                                <% if (player.marketValue) { %>
+                                    <% if (player.marketValue >= 1000000) { %>
+                                        <%= (player.marketValue / 1000000).toFixed(2) + " mil. €" %>
+                                    <% } else { %>
+                                        <%= (player.marketValue / 1000).toFixed(0) + " bin €" %>
+                                    <% } %>
+                                <% } else { %>
+                                    - 
+                                <% } %>
+                            </td>                            
+                            <td class="player-details"><%= player.agent.replace("no agent", "-") || '-' %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Oyuncu bulunamadı.</p>
+        <% } %>
+
+        <div class="pagination">
+            <button id="prevBtn" <%= currentPage > 1 ? '' : 'disabled' %> onclick="changePage(<%= currentPage - 1 %>)">Önceki</button>
+            <button disabled><span id="currentPage"><%= currentPage %></span> / <span id="lastPageNumber"><%= lastPageNumber %></span></button>
+            <button id="nextBtn" <%= currentPage < lastPageNumber ? '' : 'disabled' %> onclick="changePage(<%= currentPage + 1 %>)">Sonraki</button>
+        </div>
+    </div>
+
+    <script>
+const themeToggleButton = document.getElementById("themeToggle");
+const bodyElement = document.body;
+
+function applySavedTheme() {
+    const savedTheme = localStorage.getItem("theme") || "light-theme";
+    bodyElement.classList.remove("light-theme", "dark-theme");
+    bodyElement.classList.add(savedTheme);
+}
+
+function setupThemeToggle() {
+    const themeToggleButton = document.getElementById("themeToggle");
+
+    if (!themeToggleButton) return;
+
+    themeToggleButton.onclick = () => {
+        if (bodyElement.classList.contains("light-theme")) {
+            bodyElement.classList.remove("light-theme");
+            bodyElement.classList.add("dark-theme");
+            localStorage.setItem("theme", "dark-theme");
+        } else {
+            bodyElement.classList.remove("dark-theme");
+            bodyElement.classList.add("light-theme");
+            localStorage.setItem("theme", "light-theme");
+        }
+        updateThemeIcon();
+    };
+}
+
+function updateThemeIcon() {
+    const themeToggleButton = document.getElementById("themeToggle");
+    if (!themeToggleButton) return;
+
+    if (bodyElement.classList.contains("dark-theme")) {
+        themeToggleButton.classList.remove("fa-sun");
+        themeToggleButton.classList.add("fa-moon");
+    } else {
+        themeToggleButton.classList.remove("fa-moon");
+        themeToggleButton.classList.add("fa-sun");
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    applySavedTheme();
+    setupThemeToggle();
+    updateThemeIcon();
+});
+
+async function changePage(newPage) {
+    const playerName = "<%= playerName %>";
+    const progressBar = document.getElementById("progressBar");
+
+    if (newPage < 1 || newPage > parseInt(document.getElementById("lastPageNumber").innerText)) return;
+
+    history.pushState({}, '', `?playerName=${playerName}&page=${newPage}`);
+
+    document.getElementById("prevBtn").disabled = true;
+    document.getElementById("nextBtn").disabled = true;
+
+    progressBar.style.width = "25%"; 
+    setTimeout(() => progressBar.style.width = "50%", 300);
+    setTimeout(() => progressBar.style.width = "75%", 600);
+
+    try {
+        const response = await fetch('/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ playerName, page: newPage })
+        });
+
+        const newContent = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(newContent, "text/html");
+
+        document.querySelector(".menu").innerHTML = doc.querySelector(".menu").innerHTML;
+
+        document.getElementById("currentPage").innerText = newPage;
+        document.getElementById("prevBtn").disabled = newPage <= 1;
+        document.getElementById("nextBtn").disabled = newPage >= parseInt(document.getElementById("lastPageNumber").innerText);
+
+        setupThemeToggle();
+        updateThemeIcon();
+
+        setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 200);
+
+    } finally {
+        setTimeout(() => progressBar.style.width = "100%", 800);
+        setTimeout(() => progressBar.style.width = "0%", 1100);
+    }
+}
+</script>
+</body>
+</html>
